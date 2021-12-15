@@ -6,7 +6,7 @@ class BaseHandler
   def handle(env)
     @env = env
     method = @env['REQUEST_METHOD'].downcase.to_sym
-    return response(404, 'Not found') unless self.class.method_defined?(method)
+    return response(405, 'Method not allowed') unless self.class.method_defined?(method)
     send(method)
   end
 
