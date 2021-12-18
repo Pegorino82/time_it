@@ -16,12 +16,12 @@ class DateTimeService
   }.freeze
 
   def initialize(params)
-    @params = params
+    @params = params.split(',')
     @params_available = DATE_FORMATS.keys + TIME_FORMATS.keys
   end
 
   def valid?
-    @params.map { |param| @params_available.include?(param) }.all?
+    @params.all? { |param| @params_available.include?(param) }
   end
 
   def wrong_params

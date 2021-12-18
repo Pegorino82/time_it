@@ -12,33 +12,23 @@ class App
   private
 
   def error_request
-    return response(404, 'Not found') unless @env['REQUEST_PATH'] == '/time'
     return response(405, 'Method not allowed') unless @env['REQUEST_METHOD'] == 'GET'
-    return response(400, 'Format param expected') if time_format.nil?
 
-    false
+    response(400, 'Format param expected') if time_format.nil?
   end
 
   def time_request
-    datetime = DateTimeService.new(time_format.split(','))
+    datetime = DateTimeService.new(time_format)
     return response(400, "Unknown time format #{datetime.wrong_params}") unless datetime.valid?
 
     response(200, datetime.make_datetime)
   end
 
-  def headers
-    { 'Content-Type' => 'text/plain' }
-  end
-
   def response(status, body)
-    [status, headers, ["#{body}\n"]]
-  end
-
-  def params
-    Rack::Utils.parse_query(@env['QUERY_STRING'])
+    [status, {}, ["#{body}\n"]]
   end
 
   def time_format
-    params['format']
+    Rack::Utils.parse_query(@env['QUERY_STRING'])['format']
   end
 end
